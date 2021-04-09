@@ -23,4 +23,14 @@ ActiveRecord::Schema.define(version: 2021_04_09_144334) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "widgets", force: :cascade do |t|
+    t.string "name"
+    t.integer "value_in_cents"
+    t.integer "quantity"
+    t.bigint "user_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_widgets_on_user_id"
+  end
+
 end
