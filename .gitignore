@@ -4,24 +4,50 @@
 # or operating system, you probably want to add a global ignore instead:
 #   git config --global core.excludesfile '~/.gitignore_global'
 
+# RAILS
 # Ignore bundler config.
-/.bundle
+/server/.bundle
 
 # Ignore all logfiles and tempfiles.
-/log/*
-/tmp/*
-!/log/.keep
+/server/log/*
+/server/tmp/*
+/server/!/log/.keep
 !/tmp/.keep
 
 # Ignore pidfiles, but keep the directory.
-/tmp/pids/*
-!/tmp/pids/
-!/tmp/pids/.keep
+/server//tmp/pids/*
+/server/!/tmp/pids/
+/server/!/tmp/pids/.keep
 
 # Ignore uploaded files in development.
-/storage/*
-!/storage/.keep
-.byebug_history
+/server/storage/*
+/server/!/storage/.keep
+/server/.byebug_history
 
 # Ignore master key for decrypting credentials and more.
-/config/master.key
+/server/config/master.key
+
+# VUE
+/client/.DS_Store
+/client/node_modules
+/client/dist
+
+
+# local env files
+/client/.env.local
+/client/.env.*.local
+
+# Log files
+/client/npm-debug.log*
+/client/yarn-debug.log*
+/client/yarn-error.log*
+/client/pnpm-debug.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
