@@ -50,7 +50,7 @@
         </b-form-invalid-feedback>
       </b-form-group>
       <b-button
-        @click="loginOrSignUp"
+        @click="showLogin ? login() : signup()"
         variant="dark"
         :disabled="disableButton"
         >{{ showLogin ? "Login" : "Create User" }}</b-button
@@ -79,19 +79,50 @@ export default {
     };
   },
   methods: {
-    loginOrSignUp() {
-      this.showLogin ? this.login() : this.signup();
+    async login() {
+      await this.$store.dispatch("loginUser", this.form);
+      if (this.currentUser != null) {
+        this.$bvToast.toast(`Welcome, ${this.currentUser.username}!`, {
+          title: "Login Success",
+          variant: "success",
+          toaster: "b-toaster-top-center",
+          autoHideDelay: 1500,
+        });
+      } else {
+        this.$bvToast.toast(this.lastServerResponse, {
+          title: "Login Failed",
+          variant: "danger",
+          toaster: "b-toaster-top-center",
+        });
+      }
     },
-    login() {
-      // Perform Login
-      console.log("login");
-    },
-    signup() {
-      // Perform signup
-      console.log("signup");
+    async signup() {
+      await this.$store.dispatch("signUpUser", this.form);
+      if (this.lastServerResponse.username) {
+        this.$bvToast.toast("Success!", {
+          title: "User Successfully created.",
+          variant: "success",
+          toaster: "b-toaster-top-center",
+        });
+        this.showLogin = true;
+        this.form.password = "";
+        this.form.confirmPassword = "";
+      } else {
+        this.$bvToast.toast(this.lastServerResponse, {
+          title: "User Creation Failed",
+          variant: "danger",
+          toaster: "b-toaster-top-center",
+        });
+      }
     },
   },
   computed: {
+    currentUser() {
+      return this.$store.state.currentUser;
+    },
+    lastServerResponse() {
+      return this.$store.state.lastServerResponse;
+    },
     usernameValidation() {
       if (this.form.username == "") return null;
       return (

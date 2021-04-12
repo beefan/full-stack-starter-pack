@@ -3,8 +3,11 @@
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
+      <span v-if="loggedIn">
+        | <a id="logout-link" @click="logout">Logout</a></span
+      >
     </div>
-    <Login />
+    <Login v-if="!loggedIn" />
     <router-view />
   </div>
 </template>
@@ -19,6 +22,23 @@ export default {
     };
   },
   components: { Login },
+  computed: {
+    loggedIn() {
+      return this.$store.state.currentUser != null;
+    },
+  },
+  methods: {
+    async logout() {
+      this.$store.dispatch("logoutUser");
+      this.$bvToast.toast(`Goodbye!`, {
+        variant: "primary",
+        toaster: "b-toaster-top-center",
+        autoHideDelay: 1500,
+      });
+
+      this.$router.push("/");
+    },
+  },
 };
 </script>
 
@@ -29,6 +49,17 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+}
+
+#logout-link {
+  color: rgb(133, 133, 133);
+}
+
+#logout-link:hover {
+  opacity: 80%;
+  color: rgb(221, 101, 101);
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 #nav {
