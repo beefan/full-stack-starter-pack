@@ -4,9 +4,23 @@
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
     </div>
+    <Login />
     <router-view />
   </div>
 </template>
+
+<script>
+import Login from "./components/Login";
+
+export default {
+  data() {
+    return {
+      showLogin: true,
+    };
+  },
+  components: { Login },
+};
+</script>
 
 <style>
 #app {
