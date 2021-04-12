@@ -112,6 +112,18 @@ export default new Vuex.Store({
       const body = await res.json();
       this.commit('updateServerResponse', body);
       await this.dispatch('reloadWidgets');
+    },
+    async makeSale(_, params) {
+      const data = {
+        sale_details: {
+          widget_id: params.widgetId,
+          quantity: params.quantity
+        }
+      }
+      const res = await fetchUtil.postData(`${process.env.VUE_APP_API_HOST}/api/sales`, data);
+      const body = await res.json();
+      this.commit('updateServerResponse', body);
+      await this.dispatch('reloadWidgets');
     }
   },
   modules: {},

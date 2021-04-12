@@ -6,6 +6,8 @@
       v-bind:key="index"
     >
       <div class="edit-widget">
+        <b-icon icon="cash-stack" variant="success" @click="makeSale(widget)" />
+        <span style="width: 10px" />
         <b-icon
           icon="pencil-square"
           variant="info"
@@ -29,6 +31,23 @@
         }}
       </p>
       <p>Quantity: {{ widget.quantity }}</p>
+      <p>Sales:</p>
+      <div
+        class="sale-container"
+        v-for="(sale, index) in widget.sales"
+        v-bind:key="index"
+      >
+        <p>quantity: {{ sale.quantity }}</p>
+        <p>
+          total sale:
+          {{
+            (sale.total_sale_in_cents / 100.0).toLocaleString("en-US", {
+              style: "currency",
+              currency: "USD",
+            })
+          }}
+        </p>
+      </div>
     </div>
     <h3 id="no-widget-message" v-if="widgets.length == 0">
       You currently have no widgets
@@ -146,6 +165,12 @@ export default {
       this.clearNewWidgetForm();
       this.showNewWidgetForm = false;
     },
+    async makeSale(widget) {
+      await this.$store.dispatch("makeSale", {
+        widgetId: widget.id,
+        quantity: prompt("how many " + widget.name + " did you sell?"),
+      });
+    },
   },
 };
 </script>
@@ -178,5 +203,10 @@ export default {
   margin-left: auto;
   margin-bottom: 10px;
   padding-top: 10px;
+}
+.sale-container {
+  border: 1px solid rgb(86, 180, 133);
+  border-radius: 5px;
+  margin: 10px;
 }
 </style>
