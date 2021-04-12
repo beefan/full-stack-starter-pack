@@ -12,6 +12,17 @@
           Username must be letters and numbers, 5-20 characters long
         </b-form-invalid-feedback>
       </b-form-group>
+      <b-form-group v-if="!showLogin" label="Email: " label-for="email-input">
+        <b-form-input
+          id="email-input"
+          v-model="form.email"
+          type="text"
+          :state="emailValidation"
+        />
+        <b-form-invalid-feedback :state="emailValidation">
+          Email must be valid.
+        </b-form-invalid-feedback>
+      </b-form-group>
       <b-form-group label="Password: " label-for="password-input">
         <b-form-input
           id="password-input"
@@ -61,13 +72,23 @@ export default {
       form: {
         username: "",
         password: "",
+        email: "",
+        confirmPassword: "",
       },
+      showLogin: true,
     };
   },
   methods: {
+    loginOrSignUp() {
+      this.showLogin ? this.login() : this.signup();
+    },
     login() {
       // Perform Login
       console.log("login");
+    },
+    signup() {
+      // Perform signup
+      console.log("signup");
     },
   },
   computed: {
