@@ -4,8 +4,9 @@
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
       <span v-if="loggedIn">
-        | <a id="logout-link" @click="logout">Logout</a></span
-      >
+        | <router-link to="/widgets">Widgets</router-link> |
+        <a id="logout-link" @click="logout">Logout</a>
+      </span>
     </div>
     <Login v-if="!loggedIn" />
     <router-view />

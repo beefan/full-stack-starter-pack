@@ -7,6 +7,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     currentUser: null,
+    widgets: [],
     lastServerResponse: ""
   },
   getters: {
@@ -15,6 +16,9 @@ export default new Vuex.Store({
     },
     lastServerResponse: state => {
       return state.lastServerResponse
+    },
+    widgets: state => {
+      return state.widgets
     }
   },
   mutations: {
@@ -26,6 +30,9 @@ export default new Vuex.Store({
     },
     updateServerResponse(state, body) {
       state.lastServerResponse = body
+    },
+    setWidgets(state, widgets) {
+      state.widgets = widgets
     }
   },
   actions: {
@@ -41,7 +48,10 @@ export default new Vuex.Store({
       const body = await res.json();
       this.commit('updateServerResponse', body);
 
-      if (body.username) this.commit('login', body);
+      if (body.username) {
+        this.commit('login', body);
+        this.commit('setWidgets', body.widgets);
+      }
     },
     async signUpUser(_, signUpParams) {
       const data = {
@@ -60,8 +70,48 @@ export default new Vuex.Store({
       const res = await fetchUtil.getData(`${process.env.VUE_APP_API_HOST}/logout`);
       const body = await res.json();
       this.commit('updateServerResponse', body);
+      this.commit('setWidgets', [])
 
       if (res.status == 200) this.commit('logout');
+    },
+    async reloadWidgets() {
+      const res = await fetchUtil.getData(`${process.env.VUE_APP_API_HOST}/api/widgets`);
+      const body = await res.json();
+      if (res.status == 200) this.commit('setWidgets', body);
+    },
+    async createWidget(_, widgetParams) {
+      const data = {
+        widget_details: {
+          name: widgetParams.name,
+          value_in_cents: widgetParams.valueInCents,
+          quantity: widgetParams.quantity
+        }
+      }
+
+      const res = await fetchUtil.postData(`${process.env.VUE_APP_API_HOST}/api/widgets`, data);
+      const body = await res.json();
+      this.commit('updateServerResponse', body);
+      await this.dispatch('reloadWidgets');
+    },
+    async updateWidget(_, widgetParams) {
+      const data = {
+        widget_details: {
+          name: widgetParams.name,
+          value_in_cents: widgetParams.valueInCents,
+          quantity: widgetParams.quantity
+        }
+      }
+
+      const res = await fetchUtil.putData(`${process.env.VUE_APP_API_HOST}/api/widgets/${widgetParams.id}`, data);
+      const body = await res.json();
+      this.commit('updateServerResponse', body);
+      await this.dispatch('reloadWidgets');
+    },
+    async deleteWidget(_, widgetId) {
+      const res = await fetchUtil.deleteData(`${process.env.VUE_APP_API_HOST}/api/widgets/${widgetId}`);
+      const body = await res.json();
+      this.commit('updateServerResponse', body);
+      await this.dispatch('reloadWidgets');
     }
   },
   modules: {},
